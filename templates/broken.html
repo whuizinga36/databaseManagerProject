@@ -1,0 +1,15 @@
+<title>Report Broken</title>
+
+<!DOCTYPE html>
+<html>
+    <h1>Confirm Station Broken:</h1>
+    Station ID: {{stationid}}<br>
+    <br>
+    Appointment ID: {{appid}}
+    <form action="/reportbroken/{{appid}}" method="POST">
+        <input type="hidden" name="appID" value="{{appid}}">
+        <input type="submit" name="Delete Station" value="Report Broken">
+    </form>
+    <br>
+    <a href="/editappointment/{{appid}}">Cancel</a>
+</html>

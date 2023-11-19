@@ -1,0 +1,100 @@
+<title>Create Appointment</title>
+
+<!DOCTYPE html>
+<html>
+    <h1>New Appointment</h1>
+    <form action="/newappointment" method='POST'>
+        <table>
+            <tr>
+                <td>
+                <label for="dLoc">Drop Off Location *</label>
+                </td>
+                <td>
+                <input type="text" name="dLoc" maxlength="100" required>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                <label for="dTime">Drop Off Time *</label>
+                </td>
+                <td>
+                <input type="datetime-local" name="dTime" required>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                <label for="dInstructions">Drop Off Instructions</label>
+                </td>
+                <td>
+                <input type="text" name="dInstructions" maxlength="200">
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                <label for="pLoc">Pick Up Location *</label>
+                </td>
+                <td>
+                <input type="text" name="pLoc"  maxlength="100" required>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                <label for="pTime">Pick Up Time *</label>
+                </td>
+                <td>
+                <input type="datetime-local" name="pTime" required>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                <label for="pInstructions">Pick Up Instructions</label>
+                </td>
+                <td>
+                <input type="text" name="pInstructions" maxlength="200">
+            </tr>
+
+            <tr>
+                <td>
+                <label for="hospitalName">Hospital Name *</label>
+                </td>
+                <td>
+                <input type="text" name="hospitalName" maxlength="50" required>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                <label for="comments">Comments</label>
+                </td>
+                <td>
+                <input type="text" name="comments" maxlength="200">
+                </td>
+            </tr>
+
+        </table>
+        <input type="submit" name="submit" value="Submit">
+    </form>
+
+    <h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+
+        {% endif %}
+    {% endwith %}
+    </h1>
+    <br>
+    <a href="/home">
+        <button>
+            Cancel
+        </button>
+    </a>
+</html>

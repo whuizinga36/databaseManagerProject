@@ -1,0 +1,12 @@
+<title>Delete Station</title>
+
+<!DOCTYPE html>
+<html>
+    <h1>Confirm Delete Station {{stationid}}:</h1>
+    <form action="/deleteStation/{{stationid}}" method="POST">
+        <input type="hidden" name="id" value="{{stationid}}">
+        <input type="submit" name="Delete Station" value="Delete Station">
+    </form>
+    <br>
+    <a href="/home">Cancel</a>
+</html>

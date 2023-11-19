@@ -1,0 +1,35 @@
+<title>Add Station</title>
+
+<!DOCTYPE html>
+<html>
+    <h1>Add a Machine</h1>
+
+    <form action="/addstation" method="POST">
+        <table>
+            <tr>
+                <td>
+                    Machine ID:
+                </td>
+                <td></td>
+                <td>
+                    <input type="text" name="stationid" id="stationid">
+                </td>
+            </tr>
+
+    
+        </table>
+
+        <input type="submit" value="Add Machine">
+    </form>
+    {% with messages = get_flashed_messages() %}
+            {% if messages %}
+
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+
+            {% endif %}
+        {% endwith %}
+        <br>
+    <a href="/home">Cancel</a>
+</html>

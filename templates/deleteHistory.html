@@ -1,0 +1,12 @@
+<title>Delete History</title>
+
+<!DOCTYPE html>
+<html>
+    <h1>Confirm Delete Past Appointment:</h1>
+    <form action="/deleteHistory/{{appid}}" method="POST">
+        <input type="hidden" name="id" value="{{appid}}">
+        <input type="submit" name="Delete Appointment" value="Delete Appointment">
+    </form>
+    <br>
+    <a href="/history">Cancel</a>
+</html>

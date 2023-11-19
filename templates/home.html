@@ -1,0 +1,368 @@
+<title>Home</title>
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible"
+          content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width,
+                   initial-scale=1.0">
+
+    <style>
+        table, tr {
+            border: 1px solid;
+            border-collapse: collapse;
+        }
+        td {
+            padding: 3px;
+            border: 1px solid;
+            border-collapse: collapse;
+            color: darkslategrey;
+            height: 40px;
+            width: 100px;
+            max-width: 200px;
+            text-align: center;
+
+            word-wrap: break-word;
+            /* overflow: hidden; */
+
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            align-content: center;
+        }
+        h1 {
+            color: black;
+            margin-left: 10px;
+            font-size: large;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .popup {
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: none;
+        }
+        .popup-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888888;
+            width: 30%;
+            font-weight: bolder;
+        }
+        .popup-content button {
+            display: block;
+            margin: 0 auto;
+        }
+        .show {
+            display: block;
+        }
+
+    </style>
+
+</head>
+    <body>
+    <h1>
+        Stations
+    </h1>
+        <!-- station manager -->
+        <table>
+
+            <thead>
+                <th>IDS</th>
+                <th>Status</th>
+            </thead>
+
+        
+        {% for stat in stations %}
+            {% if stat['stage'] != 1 %}
+            <tr>
+                <td>
+                    {{stat['stationID']}}
+                </td>
+                <td>
+                    {% if stat['stage'] == 0 %}
+                        In storage
+                    {% elif stat['stage'] == 1 %}
+                        Appointment Scheduled
+                    {% elif stat['stage'] == 2 %}
+                        Inspection Required
+                    {% elif stat['stage'] == 5 %}
+                        Reported Broken
+                    {% elif stat['stage'] == 6 %}
+                        In Transit to Storage
+                    {% elif stat['stage'] == 4 %}
+                        Returned to Storage
+                    {% endif %}
+
+                </td>
+
+                <!-- <td> -->
+                <td style="max-width: 500px;">
+                    {% if stat['stage'] == 0 %}
+                    <a href="/deleteStation/{{stat['stationID']}}">
+                        Delete Station
+                    </a>
+                    
+                    {% elif stat['stage'] == 5 %}
+                        <form action="/home" method="POST">
+                            <input type="hidden" id="inputtype" name="inputtype" value="2">
+                            <input type="hidden" id="id" name="id" value="{{stat['stationID']}}">
+
+                            <input type="submit" id="submit" value="Confirm Picked Up">
+
+                        </form>
+
+                    {% elif stat['stage'] == 6 %}
+                        <form action="/home" method="POST">
+                            <input type="hidden" id="inputtype" name="inputtype" value="2">
+                            <input type="hidden" id="id" name="id" value="{{stat['stationID']}}">
+
+                            <input type="submit" id="submit" value="Confirm In Storage">
+
+                        </form>
+                    
+                    {% else %}
+
+                        <a href="/passedInspection/{{stat['stationID']}}">
+                            Passed Inspection
+                        </a>
+
+                    {% endif %}
+                </td>
+
+            </tr>
+            {% endif %}
+        {% endfor %}
+
+        
+        <!-- machines on  assignments -->
+        {% for assigned in assigneds %}
+            <tr>
+                <td>
+                    {{assigned['stationID']}}
+                </td>
+                
+                <td>
+                    {% if assigned['status'] == 1 %}
+                        En route to {{assigned['hospitalName']}}
+                    {% elif assigned['status'] == 2 %}
+                        Currently at {{assigned['hospitalName']}}
+                    {% elif assigned['status'] == 3 %}
+                        En route to storage
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+
+        </table>
+        <br>
+        <a href="/addstation">Add a station</a>
+        <br><br>
+
+
+        <!-- appointment manager -->
+        <h1>Appointments</h1>
+        <table border="1">
+            <tr>
+                <td>
+                    Appointment ID
+                </td>
+
+                <td>
+                    Drop Off Location
+                </td>
+                <td>
+                    Drop Off Time
+                </td>
+                <td>
+                    Pick Up Location
+                </td>
+                <td>
+                    Pick Up Time
+                </td>
+                <td>
+                    Hospital Name
+                </td>
+                <td>
+                    Select Machine
+                </td>
+            </tr>
+        {% for appointment in appointments %}
+            <tr>
+                <td>
+                    {{appointment['appointmentid']}}
+                </td>
+                <td>
+                    {{appointment['dLoc']}}
+                </td>
+                <td>
+                    {{appointment['dTime']}}
+                </td>
+                <td>
+                    {{appointment['pLoc']}}
+                </td>
+                <td>
+                    {{appointment['pTime']}}
+                </td>
+                <td width=100>
+                    {{appointment['hospitalName']}}
+                </td>
+                
+                <form action="/home" method="POST">
+
+                    <input type="hidden" id="inputtype" name="inputtype" value="1">
+                    <input type="hidden" id="appID" name="appID" value="{{appointment['appointmentid']}}">
+                    
+                    
+                    <td width=100>
+                        {% if appointment['status'] == 0 %}
+                        <!-- area for confirming machine has been selected -->
+
+                            {% if availablestations[0] != null %}
+                                <select name="serial" id="serial">
+                                    <option value=""></option>
+                                    {% for station in availablestations %}
+                                    <!-- can remove this if statement -->
+                                        {% if station['stage'] == 0 %}
+                                            <option value="{{station['stationID']}}">{{station['stationID']}}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+
+                            {% else %}
+                                <input type="hidden" name="serial" id="serial" value="">
+                                No Machines Available
+                            {% endif %}
+                        {% else %}
+                            {{appointment['machine']}} selected
+                        {% endif %}
+                    </td>
+                    
+
+                    
+                    <td>
+                        <a href="/editappointment/{{appointment['appointmentid']}}">Edit Appointment</a>
+                    </td>
+                    <td style="max-width: 300px;">
+                        {% if appointment['status'] == 0 %}
+                            <input type="submit" value="Confirm Machine En Route to Appointment">
+                        {% elif appointment['status'] == 1 %}
+                            <input type="submit" value="Confirm Machine Dropped Off">
+                        {% elif appointment['status'] == 2 %}
+                            <input type="submit" value="Confirm Machine Picked Up">
+                        {% elif appointment['status'] == 3 %}
+                            <input type="submit" value="Confirm Machine Returned to Storage">
+                        {% endif %}
+                    </td>
+                </form>
+                
+            </tr>
+        {% endfor %}
+        </table>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+
+            {% endif %}
+        {% endwith %}
+        <br>
+        <br>
+        <a href="/newappointment">
+            <button>
+                Make a new Appointment
+            </button>
+        </a>
+        <br>
+        <br>
+        <a href="/history">
+            <button>
+                View History
+            </button>
+        </a>
+        <br>
+        <br>
+        <a href="/logout">
+            <button>
+                Logout
+            </button>
+        </a>
+        <br>
+        <br>
+        <a href="/adduser">
+            <button>
+                Add a user
+            </button>
+        </a>
+    </body>
+
+
+    <script>
+
+
+        var pop = document.getElementsByClassName("button");
+
+        var popup = document.getElementsByClassName("popup")
+
+        var closePop = document.getElementsByClassName("cancel")
+
+        // document.getElementById("demo").innerHTML = popup.length;
+
+        var i = 0;
+
+        
+
+        for (i = 0; i < pop.length-1; i++) {
+            currentButton = pop[i]
+            currentPopup = popup[i]
+            closeButton = closePop[i]
+            currentButton.addEventListener("click", function () {
+                // popup[0].classList.add("show");
+                currentPopup.classList.add("show");
+
+                // this.classList.add("show");
+            });
+            closeButton.addEventListener("click", function () {
+                // popup[0].classList.remove("show");
+                currentPopup.classList.remove("show");
+
+                // this.classList.remove("show");
+            });
+            window.addEventListener("click", function (event) {
+                if (event.target == currentPopup) {
+                    // popup[0].classList.remove("show");
+                    currentPopup.classList.remove("show");
+
+                    // this.classList.remove("show");
+                }
+            });
+        }
+
+        // not sure why i need this but for some reason i do
+
+        pop[pop.length-1].addEventListener("click", function () {
+            popup[pop.length-1].classList.add("show");
+        });
+        closePop[pop.length-1].addEventListener("click", function () {
+            popup[pop.length-1].classList.remove("show");
+        });
+        window.addEventListener("click", function (event) {
+            if (event.target == popup[pop.length-1]) {
+                popup[pop.length-1].classList.remove("show");
+            }
+        });
+    </script>
+
+</html>

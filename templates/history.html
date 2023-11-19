@@ -1,0 +1,231 @@
+<title>History</title>
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+
+        <style>
+            .collapsible {
+              background-color: #777;
+              color: white;
+              cursor: pointer;
+              padding: 5px;
+              width: 100%;
+              border: none;
+              text-align: left;
+              outline: none;
+              font-size: 15px;
+            }
+            .active, .collapsible:hover {
+              background-color: #555;
+            }
+            .content {
+              padding: 0 18px;
+              display: none;
+              overflow: hidden;
+              background-color: #f1f1f1;
+            }
+            th {
+                text-align: left;
+                padding-right: 15px;
+            }
+            td {
+                padding: 5px;
+                border: 1px solid;
+                border-collapse: collapse;
+                color: darkslategrey;
+                height: 40px;
+                text-align: center;
+
+                word-wrap: break-word;
+                /* overflow: hidden; */
+
+                white-space:nowrap;
+                overflow:hidden;
+                text-overflow:ellipsis;
+                align-content: center;
+            }
+            table, tr {
+                border: 1px solid;
+                border-collapse: collapse;
+            }
+            .popup {
+                position: fixed;
+                z-index: 1;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0, 0, 0, 0.4);
+                display: none;
+            }
+            .popup-content {
+                background-color: white;
+                margin: 10% auto;
+                padding: 20px;
+                border: 1px solid #888888;
+                width: 30%;
+                font-weight: bolder;
+            }
+            .popup-content button {
+                display: block;
+                margin: 0 auto;
+            }
+            .show {
+                display: block;
+            }
+
+            </style>
+    </head>
+
+    <body>
+        <table>
+            <thead>
+                <th>
+                    Hospital
+                </th>
+                <th>
+                    Date of Appointment
+                </th>
+                <th>
+                    Station ID
+                </th>
+                <th>
+                    Broken Machine Record
+                </th>
+                <th>
+                    Feedback
+                </th>
+            </thead>
+
+            {% for app in previous %}
+                <tr>
+                    <td>
+                        {{app['hospital']}}
+                    </td>
+                    <td>
+                        {{app['appday']}}
+                    </td>
+                    <td>
+                        {{app['statid']}}
+                    </td>
+
+                    <td>
+                        {% for station in previousbroken %}
+                            {% if station['appid'] == app['pastid'] %}
+                                {{station['idstation']}}<br>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+
+                    <td>
+                        <button type="button" class="collapsible">Open Collapsible</button>
+                        <div class="content">
+                            <p>
+
+                                <form action="/history" method="POST">
+                                    <input type="hidden" id="inputtype" name="inputtype" value="1">
+                                    <input type="hidden" id="pastid" name="pastid" value="{{app['pastid']}}">
+                                    <textarea id="comments" name="comments" rows="4" cols="20" maxlength="1000" placeholder="Enter comments here">{{app['feedback']}}</textarea><br>
+                                    <input type="submit" id="submit" value="Enter Changes">
+                                </form>
+                            </p>
+                        </div>
+                    </td>
+
+
+                    <td>
+                        
+                        <a href="/deleteHistory/{{app['pastid']}}">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </table>
+        <br>
+
+        <a href="/home">Go Back Home</a>
+
+    </body>
+    <script>
+
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+        
+        for (i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                } else {
+                    content.style.display = "block";
+                }
+            });
+        }
+
+        var pop = document.getElementsByClassName("button");
+
+        var popup = document.getElementsByClassName("popup");
+
+        var closePop = document.getElementsByClassName("cancel");
+
+        document.getElementById("demo").innerHTML = closePop.length;
+
+        var i = 0;
+
+        for (i = 0; i < pop.length-2; i++) {
+            currentButton = pop[i];
+            currentPopup = popup[i];
+            closeButton = closePop[i];
+
+            document.getElementById("demo").innerHTML = currentButton;
+
+
+            currentButton.addEventListener("click", function () {
+
+                currentPopup.classList.add("show");
+            });
+            closeButton.addEventListener("click", function () {
+
+                currentPopup.classList.remove("show");
+            });
+            window.addEventListener("click", function (event) {
+                if (event.target == popup[i]) {
+
+                    currentPopup.classList.remove("show");
+                }
+            });
+        }
+
+        // not sure why i need this but for some reason i do
+        pop[pop.length-2].addEventListener("click", function () {
+            popup[pop.length-2].classList.add("show");
+        });
+        closePop[pop.length-2].addEventListener("click", function () {
+            popup[pop.length-2].classList.remove("show");
+        });
+        window.addEventListener("click", function (event) {
+            if (event.target == popup[pop.length-1]) {
+                popup[pop.length-1].classList.remove("show");
+            }
+        });
+
+        pop[pop.length-1].addEventListener("click", function () {
+            popup[pop.length-1].classList.add("show");
+        });
+        closePop[pop.length-1].addEventListener("click", function () {
+            popup[pop.length-1].classList.remove("show");
+        });
+        window.addEventListener("click", function (event) {
+            if (event.target == popup[pop.length-1]) {
+                popup[pop.length-1].classList.remove("show");
+            }
+        });
+        
+    </script>
+</html>

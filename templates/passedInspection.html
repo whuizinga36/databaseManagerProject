@@ -1,0 +1,12 @@
+<title>Passed Inspection</title>
+
+<!DOCTYPE html>
+<html>
+    <h1>Confirm Passed Inspection {{stationid}}:</h1>
+    <form action="/passedInspection/{{stationid}}" method="POST">
+        <input type="hidden" name="id" value="{{stationid}}">
+        <input type="submit" name="Confirm Passed Inspection" value="Confirm Passed Inspection">
+    </form>
+    <br>
+    <a href="/home">Cancel</a>
+</html>

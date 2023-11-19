@@ -1,0 +1,12 @@
+<title>Delete Appointment</title>
+
+<!DOCTYPE html>
+<html>
+    <h1>Confirm Delete Appointment {{appid}}:</h1>
+    <form action="/deleteAppointment/{{appid}}" method="POST">
+        <input type="hidden" name="id" value="{{appid}}">
+        <input type="submit" name="Delete Appointment" value="Delete Appointment">
+    </form>
+    <br>
+    <a href="/home">Cancel</a>
+</html>

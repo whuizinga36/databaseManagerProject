@@ -1,0 +1,166 @@
+<title>Edit Appointment</title>
+
+<!DOCTYPE html>
+<head>
+    <style>
+
+        td
+        {
+            padding: 5px;
+            border-collapse: collapse;
+            border-spacing: 10px;
+            max-width: 250px;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<html>
+    <h1>Edit Appointment</h1>
+
+    <form action="/editappointment/{{appointmentInfo['appointmentid']}}" method="POST">
+    <table>
+        <!-- Enter new information here -->
+
+        <tr>
+            <td>
+                <label for="dLoc">Drop Off Location</label>
+            </td>
+            <td>
+                {{appointmentInfo['dLoc']}}
+            </td>
+            {% if appointmentInfo['status'] == 0 %}
+                <td>
+                    <input type="text" name="dLoc" maxlength="100">
+                </td>
+            {% else %}
+                <input type="hidden" name="dLoc" value="">
+            {% endif %}
+        </tr>
+
+        <tr>
+            <td>
+                <label for="dTime">Drop Off Time</label>
+            </td>
+            <td>
+                {{appointmentInfo['dTime']}}
+            </td>
+            {% if appointmentInfo['status'] == 0 %}
+                <td>
+                    <input type="datetime-local" name="dTime">
+                </td>
+            {% else %}
+                <input type="hidden" name="dTime" value="">
+            {% endif %}
+        </tr>
+
+        <tr>
+            <td>
+                <label for="dInstructions">Drop Off Instructions</label>
+            </td>
+            <td>
+                {{appointmentInfo['dInstructions']}}
+            </td>
+            {% if appointmentInfo['status'] == 0 %}
+                <td>
+                    <input type="text" name="dInstructions" maxlength="200">
+                </td>
+            {% else %}
+                <input type="hidden" name="dInstructions" value="">
+            {% endif %}
+        </tr>
+
+]
+        <tr>
+            <td>
+                <label for="pLoc">Pick Up Location</label>
+            </td>
+            <td>
+                {{appointmentInfo['pLoc']}}
+            </td>
+            {% if appointmentInfo['status'] != 2 %}
+                <td>
+                    <input type="text" name="pLoc" maxlength="100">
+                </td>
+            {% else %}
+                <input type="hidden" name="pLoc" value="">
+            {% endif %}
+        </tr>
+
+        <tr>
+            <td>
+                <label for="pTime">Pick Up Time</label>
+            </td>
+            <td>
+                {{appointmentInfo['pTime']}}
+            </td>
+            {% if appointmentInfo['status'] != 2 %}
+                <td>
+                    <input type="datetime-local" name="pTime">
+                </td>
+            {% else %}
+                <input type="hidden" name="pTime" value="">
+            {% endif %}
+        </tr>
+
+        <tr>
+            <td>
+                <label for="pInstructions">Pick Up Instructions</label>
+            </td>
+            <td>
+                {{appointmentInfo['pInstructions']}}
+            </td>
+            {% if appointmentInfo['status'] != 2 %}
+                <td>
+                    <input type="text" name="pInstructions" maxlength="200">
+                </td>
+            {% else %}
+                <input type="hidden" name="pInstructions" value="">
+            {% endif %}
+        </tr>
+
+        <tr>
+            <td>
+                <label for="hospitalName">Hospital Name</label>
+            </td>
+            <td>
+                {{appointmentInfo['hospitalName']}}
+            </td>
+            {% if appointmentInfo['status'] != 2 %}
+                <td>
+                    <input type="text" name="hospitalName" maxlength="50">
+                </td>
+            {% else %}
+                <input type="hidden" name="hospitalName" value="">
+            {% endif %}
+        </tr>
+
+        <tr>
+            <td>
+                <label for="comments">Comments</label>
+            </td>
+            <td>
+                {{appointmentInfo['comments']}}
+            </td>
+            {% if appointmentInfo['status'] != 2 %}
+                <td>
+                    <input type="text" name="comments" maxlength="200">
+                </td>
+            {% else %}
+                <input type="hidden" name="comments" value="">
+            {% endif %}
+        </tr>
+    </table>
+    <br>
+    <input type="submit" name="submit" value="Submit Edits">
+    </form>
+
+    <br>
+    <br>
+
+    {% if appointmentInfo['status'] == 0 %}]
+        <a href="/deleteAppointment/{{appointmentInfo['appointmentid']}}">Delete Appointment</a>
+    {% else %}
+        <a href="/reportbroken/{{appointmentInfo['appointmentid']}}">Report Broken</a>
+    {% endif %}
+
+</html>
